@@ -2,6 +2,18 @@
 
 Backup public upload directory to S3.
 
+## Dependencies
+
+### s3cmd
+
+[s3cmd](https://github.com/s3tools/s3cmd) is used to actually interact with
+s3 and upload the files, so you need to install and configure it first.
+Install it with your preferred package manager and then configure:
+
+```shell
+$ s3cmd --configure
+```
+
 ## Configuration
 
 Configuration for the backup is saved in your home directory in the
