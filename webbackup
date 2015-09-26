@@ -55,7 +55,7 @@ for i in "${!WEBPATHS[@]}"; do
             ;;
     esac
 
-    echo "Backing up path: ${webpath}."
+    echo "Backing up path: ${webpath}"
 
     s3cmd sync --delete-removed \
         --exclude '.gitignore' \
