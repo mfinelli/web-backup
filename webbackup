@@ -24,6 +24,11 @@ if [[ ${#WEBPATHS[@]} -lt 1 ]]; then
     exit 1
 fi
 
+if [[ ${#WEBPATHS[@]} -ne ${#PREFIX[@]} ]]; then
+    echo >&2 "You don't have prefixes to match paths!"
+    exit 1
+fi
+
 if [[ -z "$BUCKET" ]]; then
     echo >&2 "You must specify an s3 bucket for uploading!"
     exit 1
@@ -39,23 +44,23 @@ if [ ! -f ~/.s3cfg ]; then
     exit 2
 fi
 
-for webpath in "${WEBPATHS[@]}"; do
-    echo "Backing up path: ${webpath}."
-
+for i in "${!WEBPATHS[@]}"; do
     # Make sure path ends in a "/"
-    case "$webpath" in
+    case "${WEBPATHS[$i]}" in
         */)
-            webpath="$webpath"
+            webpath="${WEBPATHS[$i]}"
             ;;
         *)
-            webpath="$webpath/"
+            webpath="${WEBPATHS[$i]}/"
             ;;
     esac
+
+    echo "Backing up path: ${webpath}."
 
     s3cmd sync --delete-removed \
         --exclude '.gitignore' \
         --acl-private \
         --guess-mime-type \
         --server-side-encryption \
-        "$webpath" s3://"$BUCKET"
+        "$webpath" s3://"$BUCKET"/"${PREFIX[$i]}/"
 done

@@ -26,6 +26,9 @@ You need to define the S3 bucket, and all of the paths that will be saved.
 # List of paths to backup:
 WEBPATHS=('/srv/http/site1/uploads', '/srv/http/site2/uploads')
 
+# List "folders" for each backup path:
+PREFIX=('site1' 'site2')
+
 # List your buckets with `s3cmd ls`.
 BUCKET="your-backup-bucket"
 ```
