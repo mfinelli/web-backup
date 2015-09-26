@@ -32,3 +32,13 @@ PREFIX=('site1' 'site2')
 # List your buckets with `s3cmd ls`.
 BUCKET="your-backup-bucket"
 ```
+
+## Usage
+
+Running the backup is easy! Just run the `webbackup` script!
+
+To restore a backup to a folder you can just run the sync command in reverse:
+
+```shell
+$ s3cmd sync s3://your-bucket/prefix/ ./
+```
