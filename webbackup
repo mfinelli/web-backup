@@ -38,3 +38,24 @@ if [ ! -f ~/.s3cfg ]; then
     echo >&2 "S3cmd has not been configured yet. Aborting!"
     exit 2
 fi
+
+for webpath in "${WEBPATHS[@]}"; do
+    echo "Backing up path: ${webpath}."
+
+    # Make sure path ends in a "/"
+    case "$webpath" in
+        */)
+            webpath="$webpath"
+            ;;
+        *)
+            webpath="$webpath/"
+            ;;
+    esac
+
+    s3cmd sync --delete-removed \
+        --exclude '.gitignore' \
+        --acl-private \
+        --guess-mime-type \
+        --server-side-encryption \
+        "$webpath" s3://"$BUCKET"
+done
