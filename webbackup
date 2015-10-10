@@ -72,7 +72,13 @@ for i in "${!WEBPATHS[@]}"; do
 
     echo "Backing up path: ${webpath}"
 
+    # Copy the files to the working directory
     rsync -av --progress --exclude='.gitignore' "$webpath" .
+
+    # Encrypt all the files before uploading them
+    find . -type f -exec gpg \
+        --cipher-algo AES256 --symmetric --yes --batch \
+        --passphrase="$PASSPHRASE" {} \;
 done
 
 cd ../
