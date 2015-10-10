@@ -56,10 +56,10 @@ WORKDIR=$(mktemp -d) || { \
     echo >&2 "Could not create temporary directory."; exit 1; \
 }
 
-cd /tmp
-cd "$WORKDIR"
-
 for i in "${!WEBPATHS[@]}"; do
+    cd /tmp
+    cd "$WORKDIR"
+
     # Make sure path ends in a "/"
     case "${WEBPATHS[$i]}" in
         */)
@@ -79,7 +79,7 @@ for i in "${!WEBPATHS[@]}"; do
     find . -type f -exec gpg \
         --cipher-algo AES256 --symmetric --yes --batch \
         --passphrase="$PASSPHRASE" {} \;
-done
 
-cd ../
-rmdir "$WORKDIR"
+    cd ../
+    rmdir "$WORKDIR"
+done
