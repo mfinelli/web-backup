@@ -51,3 +51,29 @@ if [ ! -f ~/.s3cfg ]; then
     echo >&2 "S3cmd has not been configured yet. Aborting!"
     exit 2
 fi
+
+WORKDIR=$(mktemp -d) || { \
+    echo >&2 "Could not create temporary directory."; exit 1; \
+}
+
+cd /tmp
+cd "$WORKDIR"
+
+for i in "${!WEBPATHS[@]}"; do
+    # Make sure path ends in a "/"
+    case "${WEBPATHS[$i]}" in
+        */)
+            webpath="${WEBPATHS[$i]}"
+            ;;
+        *)
+            webpath="${WEBPATHS[$i]}/"
+            ;;
+    esac
+
+    echo "Backing up path: ${webpath}"
+
+    rsync -av --progress --exclude='.gitignore' "$webpath" .
+done
+
+cd ../
+rmdir "$WORKDIR"
