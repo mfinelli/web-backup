@@ -78,7 +78,8 @@ for i in "${!WEBPATHS[@]}"; do
     # Encrypt all the files before uploading them
     find . -type f -exec gpg \
         --cipher-algo AES256 --symmetric --yes --batch \
-        --passphrase="$PASSPHRASE" {} \;
+        --passphrase="$PASSPHRASE" {} \; \
+        -exec rm {} \;
 
     cd ../
     rmdir "$WORKDIR"
