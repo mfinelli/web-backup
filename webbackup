@@ -18,6 +18,11 @@
 
 source ~/.webbackup
 
+if [[ -z ${PASSPHRASE+x} ]]; then
+    echo >&2 "You must configure an encryption password!"
+    exit 1
+fi
+
 if [[ ${#WEBPATHS[@]} -lt 1 ]]; then
     echo >&2 "You must specify at least one path to backup!"
     exit 1
@@ -32,6 +37,10 @@ if [[ -z "$BUCKET" ]]; then
     echo >&2 "You must specify an s3 bucket for uploading!"
     exit 1
 fi
+
+command -v rsync >/dev/null 2>&1 || { \
+    echo >&2 "Rsync is not installed. Aborting!"; exit 1; \
+}
 
 command -v s3cmd >/dev/null 2>&1 || { \
     echo >&2 "S3cmd is not installed. Aborting!"; exit 1; \
