@@ -81,6 +81,12 @@ for i in "${!WEBPATHS[@]}"; do
         --passphrase="$PASSPHRASE" {} \; \
         -exec rm {} \;
 
+    today=$(date +%Y%m%d)
+    saveas="${PREFIX[$i]}/${today}/"
+
+    s3cmd sync --acl-private --guess-mime-type --server-side-encryption \
+        ./ s3://"$BUCKET"/"$saveas"
+
     cd ../
     rmdir "$WORKDIR"
 done
