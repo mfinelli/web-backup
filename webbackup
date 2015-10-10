@@ -88,5 +88,5 @@ for i in "${!WEBPATHS[@]}"; do
         ./ s3://"$BUCKET"/"$saveas"
 
     cd ../
-    rmdir "$WORKDIR"
+    rm -rf "$WORKDIR"
 done
