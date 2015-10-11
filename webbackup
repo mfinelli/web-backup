@@ -56,12 +56,11 @@ if [ ! -f ~/.s3cfg ]; then
     exit 2
 fi
 
-WORKDIR=$(mktemp -d) || { \
-    echo >&2 "Could not create temporary directory."; exit 1; \
-}
-
 for i in "${!WEBPATHS[@]}"; do
-    cd /tmp
+    WORKDIR=$(mktemp -d) || { \
+        echo >&2 "Could not create temporary directory."; exit 1; \
+    }
+
     cd "$WORKDIR"
 
     echo "Temporary directory is $WORKDIR"
