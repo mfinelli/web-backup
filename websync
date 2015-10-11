@@ -16,12 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-source ~/.webbackup
-
-if [[ -z ${PASSPHRASE+x} ]]; then
-    echo >&2 "You must configure an encryption password!"
-    exit 1
-fi
+# Get local configuration
+source ~/.websync
 
 if [[ ${#WEBPATHS[@]} -lt 1 ]]; then
     echo >&2 "You must specify at least one path to backup!"
@@ -38,14 +34,6 @@ if [[ -z "$BUCKET" ]]; then
     exit 1
 fi
 
-command -v cfv >/dev/null 2>&1 || { \
-    echo >&2 "Cfv is not installed. Aborting!"; exit 1; \
-}
-
-command -v rsync >/dev/null 2>&1 || { \
-    echo >&2 "Rsync is not installed. Aborting!"; exit 1; \
-}
-
 command -v s3cmd >/dev/null 2>&1 || { \
     echo >&2 "S3cmd is not installed. Aborting!"; exit 1; \
 }
@@ -56,14 +44,7 @@ if [ ! -f ~/.s3cfg ]; then
     exit 2
 fi
 
-WORKDIR=$(mktemp -d) || { \
-    echo >&2 "Could not create temporary directory."; exit 1; \
-}
-
 for i in "${!WEBPATHS[@]}"; do
-    cd /tmp
-    cd "$WORKDIR"
-
     # Make sure path ends in a "/"
     case "${WEBPATHS[$i]}" in
         */)
@@ -76,26 +57,10 @@ for i in "${!WEBPATHS[@]}"; do
 
     echo "Backing up path: ${webpath}"
 
-    # Copy the files to the working directory
-    rsync -av --progress --exclude='.gitignore' "$webpath" .
-
-    cfv -C -rr -t sha1
-
-    # http://stackoverflow.com/a/3294514
-    mv "${WORKDIR##*/}".sha1 "${PREFIX[$i]}".sha1
-
-    # Encrypt all the files before uploading them
-    find . -type f -exec gpg \
-        --cipher-algo AES256 --symmetric --yes --batch \
-        --passphrase="$PASSPHRASE" {} \; \
-        -exec rm {} \;
-
-    today=$(date +%Y%m%d)
-    saveas="${PREFIX[$i]}/${today}/"
-
-    s3cmd sync --acl-private --guess-mime-type --server-side-encryption \
-        ./ s3://"$BUCKET"/"$saveas"
-
-    cd ../
-    rm -rf "$WORKDIR"
+    s3cmd sync --delete-removed \
+        --exclude '.gitignore' \
+        --acl-private \
+        --guess-mime-type \
+        --server-side-encryption \
+        "$webpath" s3://"$BUCKET"/"${PREFIX[$i]}/"
 done
