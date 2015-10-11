@@ -38,6 +38,10 @@ if [[ -z "$BUCKET" ]]; then
     exit 1
 fi
 
+command -v cfv >/dev/null 2>&1 || { \
+    echo >&2 "Cfv is not installed. Aborting!"; exit 1; \
+}
+
 command -v rsync >/dev/null 2>&1 || { \
     echo >&2 "Rsync is not installed. Aborting!"; exit 1; \
 }
@@ -74,6 +78,11 @@ for i in "${!WEBPATHS[@]}"; do
 
     # Copy the files to the working directory
     rsync -av --progress --exclude='.gitignore' "$webpath" .
+
+    cfv -C -rr -t sha1
+
+    # http://stackoverflow.com/a/3294514
+    mv "${WORKDIR##*/}".sha1 "${PREFIX[$i]}".sha1
 
     # Encrypt all the files before uploading them
     find . -type f -exec gpg \

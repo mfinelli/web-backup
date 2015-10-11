@@ -4,6 +4,12 @@ Backup public upload directory to S3.
 
 ## Dependencies
 
+### cfv
+
+Checksums (SHA1) of every file are generated before encrypting and uploading
+them to the s3 bucket using `cfv`. You should install it using your preferred
+package manager before running `webbackup`.
+
 ### s3cmd
 
 [s3cmd](https://github.com/s3tools/s3cmd) is used to actually interact with
