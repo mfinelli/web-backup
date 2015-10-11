@@ -80,8 +80,10 @@ for i in "${!WEBPATHS[@]}"; do
 
     cfv -C -rr -t sha1
 
-    # http://stackoverflow.com/a/3294514
-    mv "${WORKDIR##*/}".sha1 "${PREFIX[$i]}".sha1
+    if [[ -f "${WORKDIR##*/}".sha1 ]]; then
+        # http://stackoverflow.com/a/3294514
+        mv "${WORKDIR##*/}".sha1 "${PREFIX[$i]}".sha1
+    fi
 
     # Encrypt all the files before uploading them
     find . -type f -exec gpg \
