@@ -36,7 +36,7 @@ to be backed up.
 PASSPHRASE="AReallyGoodPassword"
 
 # List of paths to backup:
-WEBPATHS=('/srv/http/site1/uploads', '/srv/http/site2/uploads')
+WEBPATHS=('/srv/http/site1/uploads' '/srv/http/site2/uploads')
 
 # List of "folders" for each backup path:
 PREFIX=('site1' 'site2')
@@ -55,7 +55,7 @@ You need to define the S3 bucket, and all of the paths that will be saved.
 
 ```shell
 # List of paths to backup:
-WEBPATHS=('/srv/http/site1/uploads', '/srv/http/site2/uploads')
+WEBPATHS=('/srv/http/site1/uploads' '/srv/http/site2/uploads')
 
 # List "folders" for each backup path:
 PREFIX=('site1' 'site2')
