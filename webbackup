@@ -63,9 +63,6 @@ for i in "${!WEBPATHS[@]}"; do
 
     cd "$WORKDIR"
 
-    echo "Temporary directory is $WORKDIR"
-    echo "Doing work in $(pwd)"
-
     # Make sure path ends in a "/"
     case "${WEBPATHS[$i]}" in
         */)
@@ -84,7 +81,6 @@ for i in "${!WEBPATHS[@]}"; do
     cfv -C -rr -t sha1
 
     # http://stackoverflow.com/a/3294514
-    echo "Going to move ${WORKDIR##*/} to ${PREFIX[$i]}"
     mv "${WORKDIR##*/}".sha1 "${PREFIX[$i]}".sha1
 
     # Encrypt all the files before uploading them
